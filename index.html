@@ -91,7 +91,7 @@ function showHome(){
  document.getElementById('main').innerHTML=`
  <section class="hero">
    <div class="month">${new Date().getMonth()+1}月のあなた</div>
-   <h1>今月、欲望に勝った金額</h1>
+   <h1>今月、我慢できた金額</h1>
    <div class="big">${yen(s.good)}</div>
    <div class="sub">「使わなかった」を、ちゃんと実績に。</div>
    <div class="progress"><div class="bar" style="width:${pct}%"></div></div>
@@ -99,12 +99,12 @@ function showHome(){
  </section>
  <div class="actions">
    <button class="action good" onclick="openEntry('good')"><span class="emoji">🥹</span>我慢した！</button>
-   <button class="action bad" onclick="openEntry('bad')"><span class="emoji">💸</span>負けた！</button>
+   <button class="action bad" onclick="openEntry('bad')"><span class="emoji">💸</span>使った！</button>
  </div>
  <button class="secondary" onclick="openHistory()">📖 がんばり履歴を見る</button>
  <div class="stats">
    <div class="stat"><div class="label">我慢した</div><div class="num plus">${yen(s.good)}</div></div>
-   <div class="stat"><div class="label">欲で使った</div><div class="num minus">${yen(s.bad)}</div></div>
+   <div class="stat"><div class="label">楽しみに使った</div><div class="num minus">${yen(s.bad)}</div></div>
    <div class="stat"><div class="label">がんばり収支</div><div class="num">${s.net>=0?'+':''}${yen(s.net).replace('¥','¥')}</div></div>
  </div>
  <div class="section-title">🍀 最近のがんばり</div>
@@ -113,9 +113,9 @@ function showHome(){
  <div class="card">${achieved(s.good).slice(0,4).map(r=>`<div class="reward"><div><b>${yen(r.amount)}</b><small>${esc(r.name)}</small></div><span class="badge">${r.photo!==null?'📸 写真あり':'🍀 達成'}</span></div>`).join('')||'<div class="empty">まずは130円のアイスから🍦</div>'}</div>`;
  setNav(0);
 }
-function entryHtml(e){return `<div class="recent"><div class="rleft"><div class="rtitle"><span class="tag ${e.type==='good'?'good':'bad'}">${e.type==='good'?'我慢':'欲'}</span>${esc(e.note)}</div><div class="rdate">${e.date}${e.category&&e.category!=='なし'?' ・ '+esc(e.category):''}</div></div><div class="${e.type==='good'?'plus':'minus'}">${e.type==='good'?'+':'−'}${yen(e.amount)}</div></div>`}
+function entryHtml(e){return `<div class="recent"><div class="rleft"><div class="rtitle"><span class="tag ${e.type==='good'?'good':'bad'}">${e.type==='good'?'我慢':'使った'}</span>${esc(e.note)}</div><div class="rdate">${e.date}${e.category&&e.category!=='なし'?' ・ '+esc(e.category):''}</div></div><div class="${e.type==='good'?'plus':'minus'}">${e.type==='good'?'+':'−'}${yen(e.amount)}</div></div>`}
 function openEntry(type){
- document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><h2>${type==='good'?'🥹 我慢した！':'💸 負けた！'}</h2>
+ document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><h2>${type==='good'?'🥹 我慢した！':'💸 使った！'}</h2>
  <label>金額</label><input id="amount" type="number" inputmode="numeric" placeholder="例：1500">
  <label>内容</label><textarea id="note" placeholder="${type==='good'?'例：仕事帰りのカフェを我慢した':'例：AND2BLEのCDを買った'}"></textarea>
  ${type==='bad'?'<label>カテゴリ</label><select id="category"><option>CD</option><option>ライブ・イベント</option><option>グッズ</option><option>渡韓</option><option>美容</option><option>カフェ・食べ物</option><option>サブスク</option><option>その他</option></select>':''}
@@ -126,10 +126,12 @@ function openEntry(type){
 function addEntry(type){
  const amount=Number(document.getElementById('amount').value), note=document.getElementById('note').value.trim(), date=document.getElementById('date').value;
  if(!amount||amount<1||!note||!date){toast('金額と内容を入れてね');return}
+ const before=sums(monthEntries());
  data.entries.push({id:Date.now(),type,amount,note,date,category:document.getElementById('category')?.value||'なし',created:Date.now()});save();closeSheet();showHome();
- const s=sums(monthEntries()), r=nextReward(s.good);
- if(type==='good' && r && s.good>=r.amount) setTimeout(()=>celebrate(r),250);
- else toast(type==='good'?'🍀 がんばりを記録したよ！':'💸 敗北を記録したよ。次で取り返そう🍀');
+ const after=sums(monthEntries());
+ const crossed=type==='good'?[...data.rewards].filter(r=>r.amount>before.good && r.amount<=after.good).sort((a,b)=>a.amount-b.amount)[0]:null;
+ if(crossed) setTimeout(()=>celebrate(crossed),250);
+ else toast(type==='good'?'🍀 がんばりを記録したよ！':'💸 楽しみに使った記録を残したよ🍀');
 }
 function celebrate(r){
  document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><div class="celebrate"><div class="clover">🍀</div><h3>${yen(r.amount)}達成！</h3><div class="rewardline">${esc(r.name)}を守ったよ！</div>${r.photo?`<div style="margin:16px auto;max-width:250px"><img src="${r.photo}" style="width:100%;border-radius:18px"></div>`:'<div style="margin:18px;color:#7a8673">📸 この金額に写真を設定すると<br>達成時に表示できるよ</div>'}</div><button class="submit" onclick="closeSheet()">うれしい！🍀</button>`;
@@ -150,8 +152,8 @@ function renderHistory(filter,btn){
 function openSettings(){
  document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><h2>⚙️ 設定</h2>
  <div class="section-title" style="margin-top:0">📸 達成写真</div>
- <p style="font-size:12px;color:#74806f;margin-top:-4px">写真はこの端末のブラウザ内に保存します。あとから何度でも変更できます。</p>
- <div id="rewardSettings">${data.rewards.sort((a,b)=>a.amount-b.amount).map(rewardSettingHtml).join('')}</div>
+ <p style="font-size:12px;color:#74806f;margin-top:-4px">写真はこの端末のブラウザ内に保存します。設定後は「見る」で達成写真を確認・拡大できます。</p>
+ <div class="section-title" style="font-size:14px;margin-top:4px">達成イメージを確認</div><div id="rewardSettings">${data.rewards.sort((a,b)=>a.amount-b.amount).map(rewardSettingHtml).join('')}</div>
  <div class="section-title">🎁 ご褒美ライン</div>
  <button class="secondary" onclick="addReward()">＋ 新しいご褒美を追加</button>
  <div class="section-title">⚠️ データ</div>
@@ -159,13 +161,34 @@ function openSettings(){
  openSheet();
 }
 function rewardSettingHtml(r){
- return `<div class="photo-item"><div class="photo-thumb">${r.photo?`<img src="${r.photo}">`:'🍀'}</div><div><strong>${yen(r.amount)} ・ ${esc(r.name)}</strong><small>${r.photo?'写真設定済み':'写真なし'}</small></div><button class="smallbtn" onclick="pickPhoto(${r.id})">${r.photo?'変更':'設定'}</button></div>`;
+ return `<div class="photo-item">
+   <div class="photo-thumb" onclick="previewReward(${r.id})">${r.photo?`<img src="${r.photo}">`:'🍀'}</div>
+   <div><strong>${yen(r.amount)} ・ ${esc(r.name)}</strong><small>${r.photo?'写真設定済み':'写真なし'}</small></div>
+   <div style="display:flex;gap:6px">
+     ${r.photo?`<button class="smallbtn" onclick="previewReward(${r.id})">見る</button>`:''}
+     <button class="smallbtn" onclick="pickPhoto(${r.id})">${r.photo?'変更':'設定'}</button>
+   </div>
+ </div>`;
 }
 function pickPhoto(id){
  const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=()=>{
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();reader.onload=()=>{const r=data.rewards.find(x=>x.id===id);r.photo=reader.result;save();openSettings();toast('📸 写真を設定したよ！')};reader.readAsDataURL(file);
  };input.click();
+}
+function previewReward(id){
+ const r=data.rewards.find(x=>x.id===id);
+ if(!r)return;
+ document.getElementById('sheet').innerHTML=`<button class="close" onclick="openSettings()">×</button>
+ <div class="celebrate">
+   <div class="clover">🍀</div>
+   <h3>${yen(r.amount)} ・ ${esc(r.name)}</h3>
+   ${r.photo?`<img src="${r.photo}" style="width:100%;max-height:60vh;object-fit:contain;border-radius:18px;margin:12px 0;background:#f5f8f1">`
+   :`<div style="padding:38px 10px;color:#7a8673;background:#f5f8f1;border-radius:18px;margin:12px 0">📸 まだ写真が設定されていません</div>`}
+   <button class="submit" onclick="pickPhoto(${r.id})">${r.photo?'この写真を変更する':'写真を設定する'}📸</button>
+   <button class="secondary" style="margin-top:9px" onclick="openSettings()">設定一覧に戻る</button>
+ </div>`;
+ openSheet();
 }
 function addReward(){
  const amount=prompt('達成金額（例：8000）'); if(!amount||isNaN(amount))return;
