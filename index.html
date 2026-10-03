@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#B7D96A">
+<title>がんばり🍀</title>
+<style>
+:root{
+  --green:#a9d45d; --green2:#7dbb43; --pale:#f5faea; --dark:#30452a;
+  --pink:#f3a7b9; --ink:#263226; --muted:#74806f; --white:#fff;
+  --shadow:0 8px 24px rgba(62,90,45,.10); --radius:22px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(#f7fbf0,#fff);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:var(--ink)}
+button,input,select,textarea{font:inherit}
+button{border:0;cursor:pointer}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:34px}
+header{padding:calc(18px + env(safe-area-inset-top)) 20px 10px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:22px;color:var(--dark)} .logo span{font-size:26px}
+.iconbtn{width:42px;height:42px;border-radius:50%;background:white;box-shadow:var(--shadow);font-size:20px}
+.page{padding:10px 18px}
+.hero{background:linear-gradient(145deg,#eef8d8,#dff0b5);border-radius:28px;padding:24px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"🍀";position:absolute;right:-7px;bottom:-25px;font-size:105px;opacity:.12;transform:rotate(-15deg)}
+.month{font-size:14px;color:#5f714f;font-weight:700}
+.hero h1{font-size:18px;margin:8px 0 4px}.big{font-size:42px;line-height:1.1;font-weight:900;color:var(--dark);letter-spacing:-1px}
+.sub{margin-top:7px;color:#62705a;font-size:13px}
+.progress{height:9px;background:#fff8;border-radius:20px;margin:17px 0 9px;overflow:hidden}.bar{height:100%;background:var(--green2);border-radius:20px;width:0}
+.next{font-size:13px;color:#536448}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 12px}
+.action{padding:18px 12px;border-radius:20px;background:#fff;box-shadow:var(--shadow);text-align:center;font-weight:800}
+.action .emoji{font-size:28px;display:block;margin-bottom:6px}.action.good{border:2px solid #b8d97c}.action.bad{border:2px solid #f1c2cc}
+.secondary{width:100%;background:#fff;border-radius:18px;padding:14px;box-shadow:var(--shadow);font-weight:750;color:#53604f}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0}
+.stat{background:#fff;border-radius:17px;padding:12px 8px;box-shadow:var(--shadow);text-align:center}.stat .label{font-size:11px;color:var(--muted)}.stat .num{font-weight:850;font-size:17px;margin-top:3px}
+.section-title{font-size:16px;font-weight:850;margin:24px 2px 10px}
+.card{background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:15px}
+.recent{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #edf1e8}.recent:last-child{border-bottom:0}.rleft{min-width:0}.rtitle{font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rdate{font-size:11px;color:var(--muted);margin-top:3px}.plus{color:#65a735;font-weight:850}.minus{color:#d7778b;font-weight:850}
+.empty{text-align:center;color:var(--muted);padding:18px 5px;font-size:13px}
+nav{position:sticky;bottom:0;margin-top:20px;padding:10px 18px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.93);backdrop-filter:blur(10px);display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid #edf1e8}
+.navbtn{background:transparent;color:#66715f;font-size:11px;font-weight:700;padding:7px}.navbtn.active{color:#4e8b2d}.navbtn span{display:block;font-size:20px;margin-bottom:3px}
+.overlay{position:fixed;inset:0;background:rgba(33,45,29,.38);display:none;align-items:flex-end;z-index:10}.overlay.show{display:flex}
+.sheet{width:100%;max-width:520px;margin:auto;background:#fff;border-radius:28px 28px 0 0;padding:22px 18px calc(24px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto}
+.sheet h2{margin:0 0 16px;font-size:20px}.close{float:right;background:#f2f5ef;border-radius:50%;width:34px;height:34px}
+label{display:block;font-size:12px;color:#66715f;font-weight:700;margin:13px 0 6px}input,select,textarea{width:100%;border:1px solid #dfe6d9;border-radius:13px;padding:12px;background:#fbfdf9;outline:none}textarea{min-height:76px;resize:vertical}
+.submit{width:100%;margin-top:18px;padding:14px;border-radius:15px;background:var(--green2);color:white;font-weight:850}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:9px}.choice button{padding:12px;border-radius:14px;background:#f4f7f0;color:#56634f}.choice button.sel{background:#dff0b9;outline:2px solid #9ecb61}
+.photo-item{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #edf1e8}.photo-thumb{width:62px;height:62px;border-radius:14px;background:#f1f5ed;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:25px}.photo-thumb img{width:100%;height:100%;object-fit:cover}.photo-item strong{display:block;font-size:13px}.photo-item small{color:var(--muted)}.smallbtn{background:#eef5df;padding:9px 10px;border-radius:11px;font-size:12px;font-weight:750}
+.reward{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #edf1e8}.reward:last-child{border-bottom:0}.reward b{font-size:15px}.reward small{display:block;color:var(--muted);margin-top:2px}.badge{font-size:12px;background:#eef5df;padding:6px 8px;border-radius:10px}
+.history-tabs{display:flex;gap:8px;margin-bottom:12px}.history-tabs button{flex:1;padding:10px;border-radius:13px;background:#f0f4ec;font-weight:750}.history-tabs button.active{background:#dff0b9;color:#4e7e2d}
+.tag{display:inline-block;font-size:10px;padding:4px 7px;border-radius:8px;margin-right:5px}.tag.good{background:#e8f5d3;color:#5d8c38}.tag.bad{background:#fbe7eb;color:#b05e70}
+.toast{position:fixed;left:50%;bottom:95px;transform:translateX(-50%) translateY(10px);background:#30452a;color:white;padding:12px 16px;border-radius:14px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:30;white-space:nowrap}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.celebrate{text-align:center;padding:10px 0}.celebrate .clover{font-size:58px}.celebrate h3{margin:6px 0;font-size:20px}.celebrate .rewardline{color:#5b763f;font-weight:750}
+.danger{background:#fff0f1;color:#b65c6c}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo"><span>🍀</span> がんばり</div><button class="iconbtn" onclick="openSettings()">⚙️</button></header>
+<main id="main" class="page"></main>
+<nav>
+<button class="navbtn active" onclick="showHome()"><span>🍀</span>ホーム</button>
+<button class="navbtn" onclick="openHistory()"><span>📖</span>履歴</button>
+<button class="navbtn" onclick="openSettings()"><span>⚙️</span>設定</button>
+</nav>
+</div>
+
+<div id="overlay" class="overlay" onclick="if(event.target===this)closeSheet()"><div id="sheet" class="sheet"></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY='ganbari_app_v1';
+const defaultRewards=[
+ [130,'アイス1個分',false],[600,'Bubble購読1ヶ月分',true],[700,'スタバのドリンク1杯分',false],
+ [1200,'麻辣湯1回分',false],[1500,'日本CD 1枚分',true],[4000,'韓国CD 1枚分',true],
+ [7000,'まつパ・眉毛サロン1回分',false],[12000,'ライブアプグレ1回分',true],
+ [15000,'ライブチケット1枚分',true],[30000,'渡韓・飛行機片道分',true]
+];
+let data=JSON.parse(localStorage.getItem(KEY)||'null')||{entries:[],rewards:defaultRewards.map((x,i)=>({id:i,amount:x[0],name:x[1],photo:x[2]?'':null})),photos:{}};
+if(!data.rewards?.length)data.rewards=defaultRewards.map((x,i)=>({id:i,amount:x[0],name:x[1],photo:x[2]?'':null}));
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function yen(n){return '¥'+Number(n).toLocaleString('ja-JP')}
+function monthKey(d=new Date()){return d.toISOString().slice(0,7)}
+function monthEntries(){return data.entries.filter(e=>e.date.slice(0,7)===monthKey())}
+function sums(arr){let good=0,bad=0;arr.forEach(e=>e.type==='good'?good+=e.amount:bad+=e.amount);return {good,bad,net:good-bad}}
+function nextReward(good){return [...data.rewards].sort((a,b)=>a.amount-b.amount).find(r=>r.amount>good)}
+function achieved(good){return [...data.rewards].filter(r=>r.amount<=good).sort((a,b)=>b.amount-a.amount)}
+function showHome(){
+ const s=sums(monthEntries()), next=nextReward(s.good), recent=[...monthEntries()].sort((a,b)=>b.created-a.created).slice(0,4);
+ const pct=next?Math.min(100,Math.round(s.good/next.amount*100)):100;
+ document.getElementById('main').innerHTML=`
+ <section class="hero">
+   <div class="month">${new Date().getMonth()+1}月のあなた</div>
+   <h1>今月、欲望に勝った金額</h1>
+   <div class="big">${yen(s.good)}</div>
+   <div class="sub">「使わなかった」を、ちゃんと実績に。</div>
+   <div class="progress"><div class="bar" style="width:${pct}%"></div></div>
+   <div class="next">${next?`次の「${esc(next.name)}」まで ${yen(next.amount-s.good)}`:'🎉 全ご褒美ライン達成！'}</div>
+ </section>
+ <div class="actions">
+   <button class="action good" onclick="openEntry('good')"><span class="emoji">🥹</span>我慢した！</button>
+   <button class="action bad" onclick="openEntry('bad')"><span class="emoji">💸</span>負けた！</button>
+ </div>
+ <button class="secondary" onclick="openHistory()">📖 がんばり履歴を見る</button>
+ <div class="stats">
+   <div class="stat"><div class="label">我慢した</div><div class="num plus">${yen(s.good)}</div></div>
+   <div class="stat"><div class="label">欲で使った</div><div class="num minus">${yen(s.bad)}</div></div>
+   <div class="stat"><div class="label">がんばり収支</div><div class="num">${s.net>=0?'+':''}${yen(s.net).replace('¥','¥')}</div></div>
+ </div>
+ <div class="section-title">🍀 最近のがんばり</div>
+ <div class="card">${recent.length?recent.map(entryHtml).join(''):'<div class="empty">まだ記録がないよ。<br>今日の「我慢」も「負け」も残してみよう🍀</div>'}</div>
+ <div class="section-title">🎁 守ったもの</div>
+ <div class="card">${achieved(s.good).slice(0,4).map(r=>`<div class="reward"><div><b>${yen(r.amount)}</b><small>${esc(r.name)}</small></div><span class="badge">${r.photo!==null?'📸 写真あり':'🍀 達成'}</span></div>`).join('')||'<div class="empty">まずは130円のアイスから🍦</div>'}</div>`;
+ setNav(0);
+}
+function entryHtml(e){return `<div class="recent"><div class="rleft"><div class="rtitle"><span class="tag ${e.type==='good'?'good':'bad'}">${e.type==='good'?'我慢':'欲'}</span>${esc(e.note)}</div><div class="rdate">${e.date}${e.category&&e.category!=='なし'?' ・ '+esc(e.category):''}</div></div><div class="${e.type==='good'?'plus':'minus'}">${e.type==='good'?'+':'−'}${yen(e.amount)}</div></div>`}
+function openEntry(type){
+ document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><h2>${type==='good'?'🥹 我慢した！':'💸 負けた！'}</h2>
+ <label>金額</label><input id="amount" type="number" inputmode="numeric" placeholder="例：1500">
+ <label>内容</label><textarea id="note" placeholder="${type==='good'?'例：仕事帰りのカフェを我慢した':'例：AND2BLEのCDを買った'}"></textarea>
+ ${type==='bad'?'<label>カテゴリ</label><select id="category"><option>CD</option><option>ライブ・イベント</option><option>グッズ</option><option>渡韓</option><option>美容</option><option>カフェ・食べ物</option><option>サブスク</option><option>その他</option></select>':''}
+ <label>日付</label><input id="date" type="date" value="${new Date().toISOString().slice(0,10)}">
+ <button class="submit" onclick="addEntry('${type}')">記録する🍀</button>`;
+ openSheet();
+}
+function addEntry(type){
+ const amount=Number(document.getElementById('amount').value), note=document.getElementById('note').value.trim(), date=document.getElementById('date').value;
+ if(!amount||amount<1||!note||!date){toast('金額と内容を入れてね');return}
+ data.entries.push({id:Date.now(),type,amount,note,date,category:document.getElementById('category')?.value||'なし',created:Date.now()});save();closeSheet();showHome();
+ const s=sums(monthEntries()), r=nextReward(s.good);
+ if(type==='good' && r && s.good>=r.amount) setTimeout(()=>celebrate(r),250);
+ else toast(type==='good'?'🍀 がんばりを記録したよ！':'💸 敗北を記録したよ。次で取り返そう🍀');
+}
+function celebrate(r){
+ document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><div class="celebrate"><div class="clover">🍀</div><h3>${yen(r.amount)}達成！</h3><div class="rewardline">${esc(r.name)}を守ったよ！</div>${r.photo?`<div style="margin:16px auto;max-width:250px"><img src="${r.photo}" style="width:100%;border-radius:18px"></div>`:'<div style="margin:18px;color:#7a8673">📸 この金額に写真を設定すると<br>達成時に表示できるよ</div>'}</div><button class="submit" onclick="closeSheet()">うれしい！🍀</button>`;
+ openSheet();
+}
+function openHistory(){
+ const arr=[...data.entries].sort((a,b)=>b.created-a.created);
+ document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><h2>📖 がんばり履歴</h2>
+ <div class="history-tabs"><button class="active" onclick="renderHistory('all',this)">全部</button><button onclick="renderHistory('good',this)">我慢</button><button onclick="renderHistory('bad',this)">欲</button></div>
+ <div id="historyList"></div>`;
+ openSheet();renderHistory('all');
+}
+function renderHistory(filter,btn){
+ document.querySelectorAll('.history-tabs button').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active');
+ let arr=[...data.entries].sort((a,b)=>b.created-a.created);if(filter!=='all')arr=arr.filter(e=>e.type===filter);
+ document.getElementById('historyList').innerHTML=arr.length?arr.map(entryHtml).join(''):'<div class="empty">まだ記録がないよ🍀</div>';
+}
+function openSettings(){
+ document.getElementById('sheet').innerHTML=`<button class="close" onclick="closeSheet()">×</button><h2>⚙️ 設定</h2>
+ <div class="section-title" style="margin-top:0">📸 達成写真</div>
+ <p style="font-size:12px;color:#74806f;margin-top:-4px">写真はこの端末のブラウザ内に保存します。あとから何度でも変更できます。</p>
+ <div id="rewardSettings">${data.rewards.sort((a,b)=>a.amount-b.amount).map(rewardSettingHtml).join('')}</div>
+ <div class="section-title">🎁 ご褒美ライン</div>
+ <button class="secondary" onclick="addReward()">＋ 新しいご褒美を追加</button>
+ <div class="section-title">⚠️ データ</div>
+ <button class="secondary danger" onclick="clearData()">すべての記録を消去</button>`;
+ openSheet();
+}
+function rewardSettingHtml(r){
+ return `<div class="photo-item"><div class="photo-thumb">${r.photo?`<img src="${r.photo}">`:'🍀'}</div><div><strong>${yen(r.amount)} ・ ${esc(r.name)}</strong><small>${r.photo?'写真設定済み':'写真なし'}</small></div><button class="smallbtn" onclick="pickPhoto(${r.id})">${r.photo?'変更':'設定'}</button></div>`;
+}
+function pickPhoto(id){
+ const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=()=>{
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();reader.onload=()=>{const r=data.rewards.find(x=>x.id===id);r.photo=reader.result;save();openSettings();toast('📸 写真を設定したよ！')};reader.readAsDataURL(file);
+ };input.click();
+}
+function addReward(){
+ const amount=prompt('達成金額（例：8000）'); if(!amount||isNaN(amount))return;
+ const name=prompt('守ったものの名前（例：新しい推し活イベント1回分）'); if(!name)return;
+ data.rewards.push({id:Date.now(),amount:Number(amount),name,photo:null});save();openSettings();toast('🎁 ご褒美を追加したよ！');
+}
+function clearData(){if(confirm('記録・写真・ご褒美設定を初期状態に戻します。よい？')){localStorage.removeItem(KEY);location.reload()}}
+function openSheet(){document.getElementById('overlay').classList.add('show')}
+function closeSheet(){document.getElementById('overlay').classList.remove('show')}
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+function setNav(i){document.querySelectorAll('.navbtn').forEach((b,n)=>b.classList.toggle('active',n===i))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+showHome();
+</script>
+</body>
+</html>
